@@ -4,7 +4,7 @@ PowerShellDSC Scripts to setup a small lab environment for testing puposes.
 
 First create the Domain Controller<br>
 Next create the SQL server<br>
-Finally create the SharePoint server<br>
+Finally create the first SharePoint server in the farm and add more SharePoint server to the farm if you want.<br>
 
 You will need the following PowerShell DSC Modules:<br>
 
