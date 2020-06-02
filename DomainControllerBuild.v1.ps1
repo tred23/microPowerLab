@@ -76,22 +76,22 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
         $Name = 'ADDS',
 
 <# Server Description #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $ComputerDescription = 'Active Directory Server',
 
 <# Server IP Address #>			
- 		[Parameter()]
+ 	[Parameter()]
         [String]
         $IPAddress = '192.168.87.201',
 
 <# Server Default Gateway #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $DefaultGateway = '192.168.87.1',
 
 <# DNS Server IP Address #>					
-		[Parameter()]
+	[Parameter()]
         [String]
         $DNS = '192.168.87.201',
 		
@@ -112,35 +112,35 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
 
 <# FQDN = HostName.DomainName.TopLevelDomainName example = server.'DEV2'.test #>
 <# Domain Name #>		
-		[Parameter()]
+	[Parameter()]
         [String]
-		$Domain = 'dev2',
+	$Domain = 'dev2',
 		
 <# FQDN = HostName.DomainName.TopLevelDomainName example = server.dev2.'TEST' #>
 <# Top Level Domain Name #>		
-		[Parameter()]
+	[Parameter()]
         [String]
-		$TopLevelDomain = 'test',
+	$TopLevelDomain = 'test',
 	
 <# Combined AD Domain Name #>
-		[Parameter()]
+	[Parameter()]
         [String]
-		$DomainFQDN = $Domain + '.' + $TopLevelDomain,
+	$DomainFQDN = $Domain + '.' + $TopLevelDomain,
 	
 <# LDAP Path for Users #>
-		[Parameter()]
+	[Parameter()]
         [String]
-		$UserPath = 'CN=' + 'Users' + ',DC=' + $Domain + ',DC=' + $TopLevelDomain, 
+	$UserPath = 'CN=' + 'Users' + ',DC=' + $Domain + ',DC=' + $TopLevelDomain, 
 
 <# LDAP Path for OUs #>
-		[Parameter()]
+	[Parameter()]
         [String]
-		$OUPath = 'DC=' + $Domain + ',DC=' + $TopLevelDomain, 
+	$OUPath = 'DC=' + $Domain + ',DC=' + $TopLevelDomain, 
 
 <# LDAP Path for Groups #>
-		[Parameter()]
+	[Parameter()]
         [String]
-		$GroupPath = 'OU=' + 'Service Accounts' + ',DC=' + $Domain + ',DC=' + $TopLevelDomain 
+	$GroupPath = 'OU=' + 'Service Accounts' + ',DC=' + $Domain + ',DC=' + $TopLevelDomain 
 		
     )
 
@@ -149,30 +149,30 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
     Import-DscResource -ModuleName ActiveDirectoryDsc
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -Module NetworkingDsc
-	Import-DscResource -Module ComputerManagementDsc
-	Import-DSCResource -ModuleName xDnsServer
+    Import-DscResource -Module ComputerManagementDsc
+    Import-DSCResource -ModuleName xDnsServer
 
 <# 	DSC Node Region #>
 	
     Node $AllNodes.NodeName
     {
 	
-		NetAdapterBinding DisableIPv6
+	NetAdapterBinding DisableIPv6
         {
             InterfaceAlias = $NetAdapterName
             ComponentId    = 'ms_tcpip6'
             State          = 'Disabled'
         } 
 
-		IPAddress SetIPAddress
+	IPAddress SetIPAddress
         {
             IPAddress      = $IPAddress
             InterfaceAlias = $NetAdapterName
             AddressFamily  = 'IPV4'
-			DependsOn	   = '[NetAdapterBinding]DisableIPv6'
+	    DependsOn	   = '[NetAdapterBinding]DisableIPv6'
         }
 
-		DnsServerAddress SetDnsServerAddress
+	DnsServerAddress SetDnsServerAddress
         {
             Address        = $DNS
             InterfaceAlias = $NetAdapterName
@@ -188,22 +188,22 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             DependsOn	   = '[DnsServerAddress]SetDnsServerAddress'
         }
 		
-		TimeZone SetTimeZoneToGMT
+	TimeZone SetTimeZoneToGMT
         {
             IsSingleInstance = 'Yes'
             TimeZone         = 'GMT Standard Time'
-			DependsOn	   	 = '[DefaultGatewayAddress]SetDefaultGateway'
+	    DependsOn	     = '[DefaultGatewayAddress]SetDefaultGateway'
         }
 
-		Computer SetNewNameAndDescription
+	Computer SetNewNameAndDescription
         {
             Name          	= $Name
             Description 	= $ComputerDescription
-			DependsOn	   	= '[TimeZone]SetTimeZoneToGMT'
+	    DependsOn	   	= '[TimeZone]SetTimeZoneToGMT'
         }
 		
            		
-		PendingReboot SetNewNameAndDescription
+	PendingReboot SetNewNameAndDescription
         {
             Name                        = 'SetNewNameAndDescription'
             SkipComponentBasedServicing = $false
@@ -227,34 +227,34 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
         WindowsFeature 'RSATADPowerShell'
         {
             Name      = 'RSAT-AD-PowerShell'
-			Ensure    = 'Present'
+	    Ensure    = 'Present'
             DependsOn = '[WindowsFeature]ADDS'
         }
 
         WindowsFeature 'RSAT-ADDS'
         {
             Name      = 'RSAT-ADDS'
-			Ensure    = 'Present'
+	    Ensure    = 'Present'
             DependsOn = '[WindowsFeature]RSATADPowerShell'
         }
 		
         WindowsFeature 'RSAT-AD-AdminCenter'
         {
             Name      = 'RSAT-AD-AdminCenter'
-			Ensure    = 'Present'
+	    Ensure    = 'Present'
             DependsOn = '[WindowsFeature]RSAT-ADDS'
         }
 		
         WindowsFeature 'RSAT-ADDS-Tools'
         {
             Name      = 'RSAT-ADDS-Tools'
-			Ensure    = 'Present'
+	    Ensure    = 'Present'
             DependsOn = '[WindowsFeature]RSAT-AD-AdminCenter'
         }
 					
         ADDomain 'InstallADDS'
         {
-			DomainName                    = $DomainFQDN
+	    DomainName                    = $DomainFQDN
             Credential                    = $Credential
             SafeModeAdministratorPassword = $SafeModePassword
             DatabasePath                  = $DatabasePath
@@ -263,7 +263,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             DependsOn                     = '[WindowsFeature]RSATADPowerShell'			
         }
 		
-		PendingReboot AD2
+	PendingReboot AD2
         {
             Name                        = 'AD2'
             SkipComponentBasedServicing = $false
@@ -271,7 +271,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             SkipPendingFileRename       = $false
             SkipPendingComputerRename   = $false
             SkipCcmClientSDK            = $false
-            DependsOn 					= '[ADDomain]InstallADDS'
+            DependsOn 			= '[ADDomain]InstallADDS'
         }
 		
 <# Reboot #>
@@ -293,7 +293,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn 			= '[WaitForADDomain]WaitForestAvailability'
+	    DependsOn 		= '[WaitForADDomain]WaitForestAvailability'
         }
 
         ADUser 'SQL.Services'
@@ -304,7 +304,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn 			= '[ADUser]SQL.Install'
+	    DependsOn 		= '[ADUser]SQL.Install'
         }
 		
         ADUser 'SP.Farm'
@@ -315,7 +315,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn 			= '[ADUser]SQL.Services'
+	    DependsOn 		= '[ADUser]SQL.Services'
         }
 		
         ADUser 'SP.Setup'
@@ -326,7 +326,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn 			= '[ADUser]SP.Farm'
+	    DependsOn 		= '[ADUser]SP.Farm'
         }
 		
         ADUser 'SP.WebPool'
@@ -337,7 +337,7 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn			= '[ADUser]SP.Setup'
+	    DependsOn		= '[ADUser]SP.Setup'
         }
 		
         ADUser 'SP.ServicePool'
@@ -348,20 +348,20 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             PasswordNeverResets = $true
             DomainName          = $DomainFQDN
             Path                = $UserPath
-			DependsOn 			= '[ADUser]SP.WebPool'
+	    DependsOn 		= '[ADUser]SP.WebPool'
         }
 	
 		
 <# OU Region #>		
 		
-		ADOrganizationalUnit 'Service Accounts OU'
+	ADOrganizationalUnit 'Service Accounts OU'
         {
             Name                            = 'Service Accounts'
             Path                            = $OUPath
             ProtectedFromAccidentalDeletion = $true
             Description                     = 'Service Account OU'
             Ensure                          = 'Present'
-			DependsOn 						= '[ADUser]SP.ServicePool'
+	    DependsOn 			    = '[ADUser]SP.ServicePool'
         }
 		
 <# Groups Region #>
@@ -371,43 +371,44 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
         {
             GroupName  	= 'SharePointAccounts'
             GroupScope 	= 'DomainLocal'
-			Description = 'SharePoint Service Accounts'
-			Path 		= $GroupPath
+	    Description = 'SharePoint Service Accounts'
+	    Path 	= $GroupPath
             Members    	= 'SP.Farm', 'SP.Setup', 'SP.WebPool', 'SP.ServicePool'
-			DependsOn 	= '[ADUser]SP.Farm','[ADUser]SP.Setup','[ADUser]SP.WebPool','[ADUser]SP.ServicePool'
+	    DependsOn 	= '[ADUser]SP.Farm','[ADUser]SP.Setup','[ADUser]SP.WebPool','[ADUser]SP.ServicePool'
         }
 		
         ADGroup 'SQLAccountsGroup'
         {
             GroupName  	= 'SQLAccounts'
             GroupScope 	= 'DomainLocal'
-			Description = 'SQL Service Accounts'
-			Path 		= $GroupPath
+	    Description = 'SQL Service Accounts'
+	    Path 	= $GroupPath
             Members    	= 'SQL.Install', 'SQL.Services'
-			DependsOn 	= '[ADUser]SQL.Install','[ADUser]SQL.Services'
+	    DependsOn 	= '[ADUser]SQL.Install','[ADUser]SQL.Services'
         }
 
  
 <# DNS Entry Region #>
 
 <# The next section create a round robin DNS configuration for the SharePoint site #>
-		xDnsRecord 'sites.dev3.test.1'
-		{
-			Name 				= 'sites'
-			Target 				= '192.168.87.221' # IP Address of the first SharePoint Server
-			Zone 				= $DomainFQDN
-            Type   				= 'ARecord'
-            Ensure 				= 'Present'
-			DependsOn 			= '[ADGroup]SQLAccountsGroup' 		
-		} 
-		xDnsRecord 'sites.dev3.test.2'
-		{
-			Name 				= 'sites'
-			Target 				= '192.168.87.222'# IP Address of the second SharePoint Server
-			Zone 				= $DomainFQDN
-            Type   				= 'ARecord'
-            Ensure 				= 'Present'
-			DependsOn 			= '[xDnsRecord]sites.dev3.test.1'
+	xDnsRecord 'sites.dev3.test.1'
+	{
+	    Name        = 'sites'
+	    Target 	= '192.168.87.221' # IP Address of the first SharePoint Server
+	    Zone 	= $DomainFQDN
+            Type   	= 'ARecord'
+            Ensure 	= 'Present'
+	    DependsOn 	= '[ADGroup]SQLAccountsGroup' 		
+	} 
+
+	xDnsRecord 'sites.dev3.test.2'
+	{
+	    Name 	= 'sites'
+	    Target 	= '192.168.87.222'# IP Address of the second SharePoint Server
+	    Zone 	= $DomainFQDN
+            Type   	= 'ARecord'
+            Ensure 	= 'Present'
+	    DependsOn 	= '[xDnsRecord]sites.dev3.test.1'
 		}
 		
  
@@ -417,11 +418,11 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
 $cd = @{
     AllNodes = @(
         @{
-            NodeName 					= 'localhost'
-            PsDscAllowDomainUser 		= $true
+            NodeName 			= 'localhost'
+            PsDscAllowDomainUser	= $true
             PsDscAllowPlainTextPassword = $true
-            ActionAfterReboot 			= 'ContinueConfiguration';
-            RebootNodeIfNeeded 			= $true;
+            ActionAfterReboot 		= 'ContinueConfiguration';
+            RebootNodeIfNeeded 		= $true;
         }
     )
 }
@@ -435,7 +436,7 @@ Configuration LCMConfig
         {
             ActionAfterReboot 	= 'ContinueConfiguration';
             RebootNodeIfNeeded 	= $true;
-			RefreshMode = 'Push'
+	    RefreshMode         = 'Push'
         }
     }
 }
