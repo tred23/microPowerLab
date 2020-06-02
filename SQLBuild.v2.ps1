@@ -1,6 +1,8 @@
 <#
 
 This DSC script takes the inputs under the param section and sets the IP address, default gateway, DNS server, disables IPv6, renames the server, updates the computer description, and sets the time zone to GMT and adds it to the DEV2.test doamin created with the ADDS script. It then installs SQL Server.
+This example is allowing storage of credentials in plain text by setting PSDscAllowPlainTextPassword to $true.
+Storing passwords in plain text is not a good practice and is presented only for simplicity and demonstration purposes.
 
 Follow these steps:
 Create a new VM with Windows Server 2016/2019 OS. If you want to install SQL on another drive it must be created, formatted and added to the VM before the script runs.
