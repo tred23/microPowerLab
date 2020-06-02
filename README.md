@@ -21,7 +21,7 @@ You will need to the extracted ISO files for SQL and SharePoint in a share on th
 
 You will also need all the prerequisites for SharePoint in a share on the Domain Controller as well.
 
-You will need to copy the above PowerShell DSC modules in the :\Program Files\WindowsPowerShell\Modules before you run the scripts.
+You will need to copy the above PowerShell DSC modules in the C:\Program Files\WindowsPowerShell\Modules before you run the scripts.
 
 Yes you will need to run Set-ExecutionPolicy -ExecutionPolicy Unrestricted before you run the scripts.
 
