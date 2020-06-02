@@ -1,7 +1,8 @@
 <#
     .EXAMPLE
     Text Goes Here
-
+This example is allowing storage of credentials in plain text by setting PSDscAllowPlainTextPassword to $true.
+Storing passwords in plain text is not a good practice and is presented only for simplicity and demonstration purposes.
 #>
 
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
