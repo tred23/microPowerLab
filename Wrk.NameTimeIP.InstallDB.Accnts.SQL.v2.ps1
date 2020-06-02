@@ -9,9 +9,9 @@ Make sure the following DSC modules from https://www.powershellgallery.com/ are 
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -Module NetworkingDsc
-	Import-DscResource -Module ComputerManagementDsc
-	Import-DscResource -Module xNetworking
-	Import-DSCResource -ModuleName xDnsServer
+    Import-DscResource -Module ComputerManagementDsc
+    Import-DscResource -Module xNetworking
+    Import-DSCResource -ModuleName xDnsServer
     Import-DscResource -ModuleName SqlServerDsc
     Import-DscResource -ModuleName xSqlServer
 	
@@ -78,122 +78,122 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
         $Name = 'SQL',
 
 <# Server Description #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $ComputerDescription = 'SQL Database Server',
 
 <# Server IP Address #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $IPAddress = '192.168.87.203',
 
 <# Server Default Gateway #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $DefaultGateway = '192.168.87.1',
 
 <# DNS Server IP Address #>		
-		[Parameter()]
+	[Parameter()]
         [String]
         $DNS = '192.168.87.201',
 
 <# FQDN = HostName.DomainName.TopLevelDomainName example = server.'DEV2'.test #>
 <# Domain Name #>		
-		[Parameter()]
+	[Parameter()]
         [String]
-		$Domain = 'dev2',
+	$Domain = 'dev2',
 		
 <# FQDN = HostName.DomainName.TopLevelDomainName example = server.dev2.'TEST' #>
 <# Top Level Domain Name #>		
-		[Parameter()]
+	[Parameter()]
         [String]
-		$TopLevelDomain = 'test',
+	$TopLevelDomain = 'test',
 		
 <# Share Containing .NET Framework 3.5 #>
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$NetFramework35Share = '\\ADDS\sxs',
+	$NetFramework35Share = '\\ADDS\sxs',
 
 <# Share Containing SQL2016 Binaries Extracted from ISO #>
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$SQL2016BinariesSource = '\\ADDS\SQL2016Binaries\',
+	$SQL2016BinariesSource = '\\ADDS\SQL2016Binaries\',
 
 <# Local Folder to Hold the SQL2016 Binaries #>
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$SQL2016BinariesDestination = 'D:\SQL2016Binaries',
+	$SQL2016BinariesDestination = 'D:\SQL2016Binaries',
 
 <# Location for Shared Directory #>
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$InstallSharedDir = 'D:\Program Files\Microsoft SQL Server',
+	$InstallSharedDir = 'D:\Program Files\Microsoft SQL Server',
 
 <# Location for Shared WOW Directory #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$InstallSharedWOWDir  = 'D:\Program Files (x86)\Microsoft SQL Server',
+	$InstallSharedWOWDir  = 'D:\Program Files (x86)\Microsoft SQL Server',
 
 <# Location for the SQL Instace #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$InstanceDir = 'D:\Program Files\Microsoft SQL Server',
+	$InstanceDir = 'D:\Program Files\Microsoft SQL Server',
 
 <# Location for SQL Data Directory #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$InstallSQLDataDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
+	$InstallSQLDataDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
 
 <# Location for SQL User DB #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$SQLUserDBDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
+	$SQLUserDBDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
 
 <# Location for SQL DB Log #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$SQLUserDBLogDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
+	$SQLUserDBLogDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
 
 <# Location for the SQL TEMP DB #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$SQLTempDBDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
+	$SQLTempDBDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
 
 <# Location for SQL TEMP DB Log #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$SQLTempDBLogDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
+	$SQLTempDBLogDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Data',
 
 <# Location for SQL Backups #>		
-		[Parameter()]
+	[Parameter()]
         [String]			
-		$SQLBackupDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Backup',		
+	$SQLBackupDir = 'D:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER\MSSQL\Backup',		
 
 <# Section for MSOLAP Settings, If not using OLAP Feature This Section is NOT used #>
 <# Location for SQL OLAP Config #>
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$ConfigDir = 'D:\MSOLAP\Config',
+	$ConfigDir = 'D:\MSOLAP\Config',
 
 <# Location for SQL OLAP Data #>
-		[Parameter()]
+	[Parameter()]
         [String]
-		$DataDir = 'D:\MSOLAP\Data',
+	$DataDir = 'D:\MSOLAP\Data',
 
 <# Location for SQL OLAP Log #>		
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$LogDir = 'D:\MSOLAP\Log',
+	$LogDir = 'D:\MSOLAP\Log',
 
 <# Location for SQL OLAP Backup #>		
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$BackupDir = 'D:\MSOLAP\Backup',
+	$BackupDir = 'D:\MSOLAP\Backup',
 
 <# Location for SQL OLAP TEMP #>		
-		[Parameter()]
+	[Parameter()]
         [String]		
-		$TempDir = 'D:\MSOLAP\Temp'
+	$TempDir = 'D:\MSOLAP\Temp'
 
     )
 
@@ -202,9 +202,9 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
     Import-DscResource -ModuleName xPSDesiredStateConfiguration
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -Module NetworkingDsc
-	Import-DscResource -Module ComputerManagementDsc
-	Import-DscResource -Module xNetworking
-	Import-DSCResource -ModuleName xDnsServer
+    Import-DscResource -Module ComputerManagementDsc
+    Import-DscResource -Module xNetworking
+    Import-DSCResource -ModuleName xDnsServer
     Import-DscResource -ModuleName SqlServerDsc
     Import-DscResource -ModuleName xSqlServer	
 
@@ -214,22 +214,22 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
 	Node $AllNodes.NodeName
     {
  	
-		NetAdapterBinding DisableIPv6
+	NetAdapterBinding DisableIPv6
         {
             InterfaceAlias = $NetAdapterName
             ComponentId    = 'ms_tcpip6'
             State          = 'Disabled'
         } 
 
-		IPAddress SetIPAddress
+	IPAddress SetIPAddress
         {
             IPAddress      = $IPAddress
             InterfaceAlias = $NetAdapterName
             AddressFamily  = 'IPV4'
-			DependsOn	   = '[NetAdapterBinding]DisableIPv6'
+	    DependsOn	   = '[NetAdapterBinding]DisableIPv6'
         }
 
-		DnsServerAddress SetDnsServerAddress
+	DnsServerAddress SetDnsServerAddress
         {
             Address        = $DNS
             InterfaceAlias = $NetAdapterName
@@ -245,23 +245,23 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
             DependsOn	   = '[DnsServerAddress]SetDnsServerAddress'
         }
 		
-		TimeZone SetTimeZoneToGMT
+	TimeZone SetTimeZoneToGMT
         {
             IsSingleInstance 	= 'Yes'
             TimeZone         	= 'GMT Standard Time' # Must be a valid Microsoft Time Zone
-			DependsOn	   		= '[DefaultGatewayAddress]SetDefaultGateway'
+	    DependsOn	        = '[DefaultGatewayAddress]SetDefaultGateway'
         }
 
-		Computer JoinDomain
+	Computer JoinDomain
         {
             Name          	= 'SQL'
             Description 	= $ComputerDescription
-			DomainName 		= 'DEV2.TEST'
+	    DomainName 		= 'DEV2.TEST'
             Credential 		= $Credential # Credential to join to domain
-			DependsOn	   	= '[TimeZone]SetTimeZoneToGMT'
+	    DependsOn	   	= '[TimeZone]SetTimeZoneToGMT'
         }
         		
-		PendingReboot JoinDomain
+	PendingReboot JoinDomain
         {
             Name                        = 'JoinDomain'
             SkipComponentBasedServicing = $false
@@ -275,43 +275,43 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
 
 <# SQL Accounts Group in Local Admin Region #>
 
-		Group SQLAccounts
+	Group SQLAccounts
         {
             GroupName            = 'Administrators'
-            Ensure		         = 'Present'
+            Ensure		 = 'Present'
             MembersToInclude	 = 'DEV2\SQLAccounts'
-			Credential 		 	 = $Credential
-			PsDscRunAsCredential = $Credential
-			DependsOn	   		 = '[Computer]JoinDomain'
+	    Credential 		 = $Credential
+	    PsDscRunAsCredential = $Credential
+	    DependsOn	   	 = '[Computer]JoinDomain'
         }
 
 <# SQL Prerequisites for SQL Server Region #>
 
          WindowsFeature 'NetFramework35'
         {
-            Name   					= 'NET-Framework-Core'
-            Source 					= $NetFramework35Share # Assumes built-in Everyone has read permission to the share and path.
-            Ensure 					= 'Present'
-			PsDscRunAsCredential   	= $SqlShareCredential
-            DependsOn 				= '[Group]SQLAccounts'
+            Name   		    = 'NET-Framework-Core'
+            Source 		    = $NetFramework35Share # Assumes built-in Everyone has read permission to the share and path.
+            Ensure 		    = 'Present'
+	    PsDscRunAsCredential    = $SqlShareCredential
+            DependsOn 		    = '[Group]SQLAccounts'
         }
 
         WindowsFeature 'NetFramework45'
         {
-            Name  		= 'NET-Framework-45-Core'
-            Ensure 		= 'Present'
-			DependsOn 	= '[WindowsFeature]NetFramework35'
+            Name  	= 'NET-Framework-45-Core'
+            Ensure 	= 'Present'
+	    DependsOn 	= '[WindowsFeature]NetFramework35'
         }
 
          File 'DirectoryCopy'
         {
-            Ensure 					= 'Present' # Ensure the directory is Present on the target node.
-            Type 					= 'Directory' # The default is File.
-            Recurse 				= $true # Recursively copy all subdirectories.
-            SourcePath 				= $SQL2016BinariesShare
+            Ensure 			= 'Present' # Ensure the directory is Present on the target node.
+            Type 			= 'Directory' # The default is File.
+            Recurse 			= $true # Recursively copy all subdirectories.
+            SourcePath 			= $SQL2016BinariesShare
             DestinationPath 		= $SQL2016BinariesDestination
-			PsDscRunAsCredential   	= $SqlShareCredential
-			DependsOn 				= '[WindowsFeature]NetFramework45'
+	    PsDscRunAsCredential   	= $SqlShareCredential
+	    DependsOn 			= '[WindowsFeature]NetFramework45'
         }
 
 
@@ -363,7 +363,7 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
             PsDscRunAsCredential = $SqlAdministratorCredential
          }
 		#>
-		PendingReboot PostInstall
+	PendingReboot PostInstall
         {
             Name                        = 'PostInstall'
             SkipComponentBasedServicing = $false
@@ -371,13 +371,13 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
             SkipPendingFileRename       = $false
             SkipPendingComputerRename   = $false
             SkipCcmClientSDK            = $false
-            DependsOn 					= '[SqlServerMaxDop]Set_SQLServerMaxDop_ToOne'
+            DependsOn 			= '[SqlServerMaxDop]Set_SQLServerMaxDop_ToOne'
         }
 		
 
 <# SQL Accounts Group in Local Admin Region #>
 
-		SqlServerLogin 'SP.Setup'
+	SqlServerLogin 'SP.Setup'
         {
             Ensure               = 'Present'
             Name                 = 'DEV2\SP.Setup'
@@ -477,11 +477,11 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
 $cd = @{
     AllNodes = @(
         @{
-            NodeName 					= 'localhost'
-            PsDscAllowDomainUser 		= $true
+            NodeName 			= 'localhost'
+            PsDscAllowDomainUser 	= $true
             PsDscAllowPlainTextPassword = $true
-            ActionAfterReboot 			= 'ContinueConfiguration';
-            RebootNodeIfNeeded 			= $true;
+            ActionAfterReboot 		= 'ContinueConfiguration';
+            RebootNodeIfNeeded 		= $true;
         }
     )
 }
@@ -495,7 +495,7 @@ Configuration LCMConfig
         {
             ActionAfterReboot 	= 'ContinueConfiguration';
             RebootNodeIfNeeded 	= $true;
-			RefreshMode = 'Push'
+	    RefreshMode 	= 'Push'
         }
     }
 }
