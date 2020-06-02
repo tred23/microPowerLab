@@ -108,6 +108,12 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
 	[Parameter()]
         [String]
 	$TopLevelDomain = 'test',
+
+<# Combined AD Domain Name #>
+
+	[Parameter()]
+        [String]
+	$DomainFQDN = $Domain + '.' + $TopLevelDomain
 		
 <# Share Containing .NET Framework 3.5 #>
 	[Parameter()]
