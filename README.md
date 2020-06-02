@@ -1,6 +1,6 @@
 # microPowerLab
 PowerShellDSC Scripts to setup a small lab environment for testing puposes.
-
+The scripts set the ip information, time zone, and rename the machine while adding it to the domain, with the exception of the DC since there is no Domain yet. Next they install their application. Once they are finished you are good to go with testing.
 
 First create the Domain Controller<br>
 Next create the SQL server<br>
