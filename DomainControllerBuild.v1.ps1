@@ -412,6 +412,13 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
             Ensure 	= 'Present'
 	    DependsOn 	= '[xDnsRecord]sites.dev3.test.1'
 		}
+	
+        File Finished_File
+        {
+            DestinationPath = 'C:\Temp\Finished.txt'
+            Ensure = "Present"
+            Contents = 'Computer configured, domain created, accounts and groups created'
+        }
 		
  
     }
