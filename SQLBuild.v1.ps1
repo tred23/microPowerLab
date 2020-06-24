@@ -489,7 +489,7 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
             PsDscRunAsCredential = $SqlInstallCredential
         }
 
-        File FileDemo
+        File Finished_File
         {
             DestinationPath = 'C:\Temp\Finished.txt'
             Ensure = "Present"
