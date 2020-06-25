@@ -215,7 +215,14 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
 	
 	Node $AllNodes.NodeName
     {
- 	
+ 	 	 	
+        File Started_File
+        {
+            DestinationPath = 'C:\Temp\Started.txt'
+            Ensure = "Present"
+            Contents = 'Computer not configured, not added to domain, and SQL not installed.'
+        }
+
 		NetAdapterBinding DisableIPv6
         {
             InterfaceAlias = $NetAdapterName
@@ -495,7 +502,14 @@ Configuration Wrk.NameTimeIP.InstallDB.Accnts.SQL
             Ensure = "Present"
             Contents = 'Computer configured, added to domain, and SQL Installed'
         }
-		
+	
+        File Finished_File
+        {
+            DestinationPath = 'C:\Temp\Finished.txt'
+            Ensure = "Present"
+            Contents = 'Computer configured, added to domain, and SQL Installed'
+        }
+			
      }
 }
 
