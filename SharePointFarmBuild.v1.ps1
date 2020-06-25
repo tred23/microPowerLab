@@ -1,8 +1,44 @@
 <#
-    .EXAMPLE
-    Text Goes Here
+
+This DSC script takes the inputs under the param section and sets the IP address, default gateway, DNS server, disables IPv6, renames the server, updates the computer description, and sets the time zone to GMT and adds it to the DEV2.test doamin created with the ADDS script. It then installs SQL Server.
+This example is allowing storage of credentials in plain text by setting PSDscAllowPlainTextPassword to $true.
+Storing passwords in plain text is not a good practice and is presented only for simplicity and demonstration purposes.
+
+Follow these steps:
+Create a new VM with Windows Server 2016/2019 OS. If you want to install SQL on another drive it must be created, formatted and added to the VM before the script runs.
+
+Make sure the following DSC modules from https://www.powershellgallery.com/ are copied to C:\Program Files\WindowsPowerShell\Modules
+    Import-DscResource -ModuleName xPSDesiredStateConfiguration
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -Module NetworkingDsc
+	Import-DscResource -Module ComputerManagementDsc
+	Import-DscResource -Module xNetworking
+	Import-DSCResource -ModuleName xDnsServer
+    Import-DscResource -ModuleName SqlServerDsc
+    Import-DscResource -ModuleName xSqlServer
+	
+Create a folder called C:\TEMP
+
+Copy the file Wrk.NameTimeIP.InstallDB.Accnts.SQL.v2.ps1 to C:\TEMP
+
+Open PowerShell ISE
+
+Run the following command: Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+
+Open C:\Temp\Wrk.NameTimeIP.InstallDB.Accnts.SQL.v2.ps1 inside PowerShell ISE
+
+Validate there are no errors in the script ~~~~~ Red Squiggley Lines are Bad
+
+Run the script within PowerShell ISE
+
+PowerShell ISE will prompt you for 4 credentials: Domain Admin, Network Share Access, DEV2\SQL.Install, and the DEV2\SQL.Services
+
+The machine will reboot multiple times
+
+If you want to change the Name, Default Log location, etc from the default in the script just update the corresponding Parameter String in the Account Credential and Variable Region at the top of the script
 
 #>
+
 
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 
@@ -11,6 +47,21 @@ md c:\TEMP
 
 <# Change to c:\TEMP directory #>
 cd C:\TEMP
+
+<# Account Credentials #>
+ 
+        $FarmAccount = Get-Credential -UserName 'dev2\SP.Farm' -Message "SP Farm Account and Password"
+		
+        $SPSetupAccount = Get-Credential -UserName 'dev2\SP.Setup' -Message "SP Setup Account and Password"
+
+        $WebPoolManagedAccount = Get-Credential -UserName 'dev2\SP.WebPool' -Message "SP Webpool Account and Password"
+   
+        $ServicePoolManagedAccount = Get-Credential -UserName 'dev2\SP.ServicePool' -Message "SP ServicePool Account and Password"
+        
+        $Passphrase = Get-Credential -UserName 'dev2\administrator' -Message "SP Passphrase"
+        
+        $FileAccessAccount = Get-Credential -UserName 'dev2\administrator' -Message "File Share Account and Password"
+   
 
 
 Configuration SPInstall
@@ -37,36 +88,17 @@ Configuration SPInstall
 		[Parameter()]
         [String]
         $DNS = '192.168.87.201',
-		
-		[Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()] 
-		[PSCredential] 
-		$FarmAccount, #"dev2\SP.Farm"
-		
-        [Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()] 
-		[PSCredential] 
-		$SPSetupAccount, #"dev2\SP.Setup"
-		
-        [Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()] 
-		[PSCredential] 
-		$WebPoolManagedAccount, #"dev2\SP.WebPool"
-		
-        [Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()] 
-		[PSCredential] 
-		$ServicePoolManagedAccount, #"dev2\SP.ServicePool"
-		
-        [Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()]
-		[PSCredential] 
-		$Passphrase,
-		
-        [Parameter(Mandatory=$true)] 
-		[ValidateNotNullorEmpty()] 
-		[PSCredential] 
-		$FileAccessAccount
+
+<# Share Containing SharePoint2016 Binaries Extracted from ISO #>
+		[Parameter()]
+        [String]		
+		$SP2016BinariesSource = '\\ADDS\SP2016Binaries',
+
+<# Local Folder to Hold the SharePoint2016 Binaries #>
+		[Parameter()]
+        [String]		
+		$SP2016BinariesDestination = 'C:\SP2016Binaries'
+
 
     )
 
@@ -89,6 +121,13 @@ Configuration SPInstall
     node $AllNodes.NodeName
     {
  	
+        File Started_File
+        {
+            DestinationPath = 'C:\Temp\Started.txt'
+            Ensure = "Present"
+            Contents = 'Computer not configured, not added to domain, and SharePoint not installed.'
+        }
+
 		NetAdapterBinding DisableIPv6
         {
             InterfaceAlias = 'Ethernet 3'
@@ -127,12 +166,23 @@ Configuration SPInstall
 			DependsOn	   		= '[DefaultGatewayAddress]SetDefaultGateway'
         }
 
+		PendingReboot PreJoinDomain
+        {
+            Name                        = 'PreJoinDomain'
+            SkipComponentBasedServicing = $false
+            SkipWindowsUpdate           = $false
+            SkipPendingFileRename       = $false
+            SkipPendingComputerRename   = $false
+            SkipCcmClientSDK            = $false
+            DependsOn                   = '[TimeZone]SetTimeZoneToGMT'
+        }
+
 		Computer JoinDomain
         {
             Name          	= $Name
             Description 	= $ComputerDescription
 			DomainName 		= 'DEV2.TEST'
-            Credential 		= $Passphrase  # Credential to join to domain
+            Credential 		= $FileAccessAccount  # Credential to join to domain
 			DependsOn	   	= '[TimeZone]SetTimeZoneToGMT'
         }
 
@@ -156,7 +206,6 @@ Configuration SPInstall
 		GroupName='Administrators'
 		Ensure= 'Present'
 		MembersToInclude= "dev2\SharePointAccounts"
-		#Credential = $dCredential
 		PsDscRunAsCredential = $FileAccessAccount
 		}
 
@@ -164,13 +213,13 @@ Configuration SPInstall
 # Copy SharePoint Binaries
 ###############################################################################################
 
-         File 'DirectoryCopy'
+         File SP2016Binaries_DirectoryCopy
         {
-            Ensure = "Present" # Ensure the directory is Present on the target node.
-            Type = "Directory" # The default is File.
-            Recurse = $true # Recursively copy all subdirectories.
-            SourcePath = "\\ADDS\SP2016Binaries"
-            DestinationPath = "C:\SP2016Binaries"
+            Ensure                 = 'Present' # Ensure the directory is Present on the target node.
+            Type                   = 'Directory' # The default is File.
+            Recurse                = $true # Recursively copy all subdirectories.
+            SourcePath             = $SP2016BinariesSource
+            DestinationPath        = $SP2016BinariesDestination
 			PsDscRunAsCredential   = $FileAccessAccount
         }
 
@@ -182,7 +231,7 @@ Configuration SPInstall
             SkipPendingFileRename       = $false
             SkipPendingComputerRename   = $false
             SkipCcmClientSDK            = $false
-            DependsOn                   = '[File]DirectoryCopy'
+            DependsOn                   = '[File]SP2016Binaries_DirectoryCopy'
         }
 		
 ###############################################################################################
@@ -546,6 +595,16 @@ Configuration SPInstall
             SkipCcmClientSDK            = $false
             DependsOn                   = '[SPSearchServiceApp]SearchServiceApp'
         }
+
+
+        File Finished_File
+        {
+            DestinationPath = 'C:\Temp\Finished.txt'
+            Ensure = "Present"
+            Contents = 'Computer configured, added to domain, and SharePoint installed.'
+        }
+		
+
 
     }
 }
