@@ -158,7 +158,14 @@ Configuration Wrk.NameTimeIP.InstallAD.Accounts.ADDS
 	
     Node $AllNodes.NodeName
     {
-	
+		 	
+     File Started_File
+        {
+            DestinationPath = 'C:\Temp\Started.txt'
+            Ensure = "Present"
+            Contents = 'Computer not configured, not added to domain, and Active Directory not installed.'
+        }
+
 	NetAdapterBinding DisableIPv6
         {
             InterfaceAlias = $NetAdapterName
